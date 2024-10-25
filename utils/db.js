@@ -7,9 +7,12 @@ class DBClient {
     const database = process.env.DB_DATABASE || 'files_manager';
     const url = `mongodb://${host}:${port}/${database}`;
     this.client = new mongodb.MongoClient(url, { useUnifiedTopology: true });
-    this.client.connect();
-    this.client.db().createCollection('users');
-    this.client.db().createCollection('files');
+    this.client.connect().then(() => {
+      this.client.db().createCollection('users');
+      this.client.db().createCollection('files');
+    }).catch((err) => {
+      console.error('MongoDB connection error:', err);
+    });
   }
 
   isAlive() {
