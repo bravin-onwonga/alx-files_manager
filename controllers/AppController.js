@@ -2,10 +2,10 @@ import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 
 class AppController {
-  static getStatus(req, res) {
+  static async getStatus(req, res) {
     try {
-      const redisStatus = redisClient.isAlive();
-      const dbStatus = dbClient.isAlive();
+      const redisStatus = await redisClient.isAlive();
+      const dbStatus = await dbClient.isAlive();
 
       res.status(200).json({ redisStatus, dbStatus });
     } catch (error) {
@@ -17,9 +17,9 @@ class AppController {
     try {
       const users = await dbClient.nbUsers();
       const files = await dbClient.nbFiles();
-      res.status(200).send({ users, files });
+      res.status(200).json({ users, files });
     } catch (error) {
-      res.status(404).json({ error });
+      res.status(501).json({ error });
     }
   }
 }
